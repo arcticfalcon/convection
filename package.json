@@ -27,6 +27,7 @@
     ]
   },
   "dependencies": {
+    "core-decorators": "^0.20.0",
     "cross-env": "5.0.1",
     "lodash": "^4.17.4",
     "mobx": "^3.3.0",
@@ -68,6 +69,7 @@
     "react-hot-loader": "3.0.0-beta.6",
     "react-styleguidist": "^6.0.24",
     "react-test-renderer": "^15.6.1",
+    "validator": "^9.0.0",
     "webpack": "3.6.0",
     "webpack-dev-server": "2.8.2"
   }

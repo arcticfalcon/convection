@@ -4,20 +4,20 @@ import { observer } from 'mobx-react'
 import isPlainObject from 'lodash/isPlainObject'
 import get from 'lodash/get'
 
-const Text = observer(({ path, record, ...props }) => {
-  return <span>{get(record, path)}</span>
-  return <span>{isPlainObject(record) ? get(record, path) : record[path]}</span>
+const Text = observer(({ path, model, defaultValue, ...props }) => {
+  return <span>{get(model, path, defaultValue)}</span>
 })
 
 Text.propTypes = {
   path: PropTypes.string.isRequired,
   // label: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
-  // default: PropTypes.string,
-  record: PropTypes.object,
+  defaultValue: PropTypes.string,
+  model: PropTypes.object.isRequired,
 }
 
 Text.defaultProps = {
-  // record: {},
+  model: {},
+  defaultValue: '',
 }
 
 export default Text

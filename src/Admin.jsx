@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { observable } from 'mobx'
+import { action, observable } from 'mobx'
 import { Provider, observer } from 'mobx-react'
 import { HashRouter as Router } from 'react-router-dom'
 import { Grid } from 'semantic-ui-react'
@@ -15,6 +15,7 @@ class Admin extends React.Component {
     this.routeStore = new RouteStore()
   }
 
+  @action
   componentDidMount() {
     // Defer menu rendering so resources register routes
     this.menu = this.props.menu
