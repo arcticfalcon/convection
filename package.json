@@ -1,10 +1,16 @@
 {
-  "name": "",
+  "name": "convection",
   "version": "0.0.1",
   "description": "",
+  "jsnext:main": "dist/es/index.js",
   "main": "src/index.js",
+  "module": "dist/es/index.js",
   "scripts": {
-    "dev": "webpack-dev-server",
+    "build": "npm run build:commonjs && npm run build:es",
+    "prebuild:commonjs": "rimraf dist/commonjs",
+    "build:commonjs": "cross-env NODE_ENV=build babel src -d dist/commonjs",
+    "prebuild:es": "rimraf dist/es",
+    "build:es": "cross-env NODE_ENV=build-es babel src -d dist/es",
     "lint": "eslint ./src/**/**.{js,jsx}",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -27,15 +33,20 @@
     ]
   },
   "dependencies": {
+    "class-validator": "^0.7.3",
     "core-decorators": "^0.20.0",
     "cross-env": "5.0.1",
     "lodash": "^4.17.4",
     "mobx": "^3.3.0",
     "mobx-react": "^4.3.2",
+    "path-to-regexp": "^2.1.0",
     "prop-types": "^15.5.10",
-    "react": "15.6.1",
+    "react": "^15.6.1",
     "react-dom": "15.6.1",
+    "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-router-named-routes": "^0.0.19",
+    "segmentize": "^0.4.1",
     "semantic-ui-react": "^0.73.1"
   },
   "devDependencies": {
@@ -69,6 +80,7 @@
     "react-hot-loader": "3.0.0-beta.6",
     "react-styleguidist": "^6.0.24",
     "react-test-renderer": "^15.6.1",
+    "rimraf": "^2.6.2",
     "validator": "^9.0.0",
     "webpack": "3.6.0",
     "webpack-dev-server": "2.8.2"
