@@ -1,5 +1,5 @@
-import Text from 'inputs/Text'
-import Submit from 'inputs/Submit'
+import Text from './Text'
+import Submit from './Submit'
 
 const Inputs = {
   Text,

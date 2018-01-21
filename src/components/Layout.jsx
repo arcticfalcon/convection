@@ -4,8 +4,8 @@ import PropTypes from 'prop-types'
 const Layout = ({ title, actions, children }) => (
   <div>
     {title}
-    {actions}
     {children}
+    {actions}
   </div>
 )
 

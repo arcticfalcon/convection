@@ -1,4 +1,4 @@
-import Text from 'formatters/Text'
+import Text from './Text'
 
 const Formatters = {
   Text,

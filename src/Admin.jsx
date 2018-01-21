@@ -2,18 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { action, observable } from 'mobx'
 import { Provider, observer } from 'mobx-react'
-import { HashRouter as Router } from 'react-router-dom'
+import { Router } from 'react-router'
 import { Grid } from 'semantic-ui-react'
-import RouteStore from 'stores/RouteStore'
+import createBrowserHistory from 'history/createBrowserHistory'
+
+import RootStore from './stores/RootStore'
+import { syncHistoryWithStore } from './routing/History'
+
+const rootStore = new RootStore()
+const browserHistory = createBrowserHistory()
+const history = syncHistoryWithStore(browserHistory, rootStore.historyStore)
 
 @observer
 class Admin extends React.Component {
   @observable menu
-
-  constructor() {
-    super()
-    this.routeStore = new RouteStore()
-  }
 
   @action
   componentDidMount() {
@@ -25,8 +27,8 @@ class Admin extends React.Component {
     const { children } = this.props
 
     return (
-      <Provider routeStore={this.routeStore}>
-        <Router>
+      <Provider rootStore={rootStore}>
+        <Router history={history}>
           <Grid>
             <Grid.Column width={4}>{this.menu}</Grid.Column>
             <Grid.Column width={10}>{children}</Grid.Column>

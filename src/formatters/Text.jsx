@@ -1,11 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
-import isPlainObject from 'lodash/isPlainObject'
 import get from 'lodash/get'
 
-const Text = observer(({ path, model, defaultValue, ...props }) => {
-  return <span>{get(model, path, defaultValue)}</span>
+const Text = observer(({ getter, path, model, defaultValue, ...props }) => {
+  if (!getter) {
+    getter = path => get(model, path, defaultValue)
+  }
+
+  return <span>{getter(path)}</span>
 })
 
 Text.propTypes = {

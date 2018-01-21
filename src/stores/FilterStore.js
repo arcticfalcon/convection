@@ -1,4 +1,4 @@
-import { observable, action, toJS } from 'mobx'
+import { observable, action, toJS, computed } from 'mobx'
 
 class FilterStore {
   @observable fields = new Map()
@@ -9,15 +9,20 @@ class FilterStore {
     column: undefined,
     direction: 1,
   }
+  @observable page = 1
+  @observable pages
+  fetchPromise
 
-  constructor() {
-    return new Proxy(this, filterProxyHandler)
+  constructor(fetch) {
+    this.fetchPromise = fetch
   }
 
   @action
   handleChange = (e, { name, value }) => {
     this.fields.set(name, value)
   }
+
+  getProp = path => this.fields.get(path)
 
   @action
   handleSort = path => {
@@ -32,6 +37,8 @@ class FilterStore {
     this.fetch()
   }
 
+  @action setPage = page => (this.page = page)
+
   getSort(path) {
     return this.sort.column === path ? this.sort.direction : 0
   }
@@ -42,28 +49,34 @@ class FilterStore {
   }
 
   @action
+  reset = () => {
+    this.fields.clear()
+  }
+
+  @computed
+  get model() {
+    return this.fields
+  }
+
+  @action
   fetch() {
     this.busy = true
 
-    console.log('fetching with ', toJS(this.fields), toJS(this.sort))
-
-    new Promise(resolve => {
-      setTimeout(
-        () =>
-          resolve({
-            data: [
-              { name: { first: 'john', last: 'flem' }, status: 'asd', notes: 'qwe' },
-              { name: { first: 'luke', last: 'sky' }, status: 'asd2', notes: 'qwe2' },
-            ],
-          }),
-        1000
-      )
-    }).then(this.fetchSuccess)
+    this.fetchPromise(this.fields, this.sort, this.page)
+      .then(this.fetchSuccess)
+      .catch(this.fetchFailed)
   }
 
   @action
   fetchSuccess = ({ data }) => {
     this.data = data
+    this.pages = 13 // ToDo: use actual value
+    this.busy = false
+  }
+
+  @action
+  fetchFailed = ({ data }) => {
+    // ToDo: show error
     this.busy = false
   }
 
@@ -72,22 +85,7 @@ class FilterStore {
     this.fetch()
   }
 
-  hasErrors = () => false
   isValid = () => true
-}
-
-const filterProxyHandler = {
-  get: function(filter, prop) {
-    if (prop in filter) {
-      return filter[prop]
-    }
-
-    if (filter.fields.has(prop)) {
-      return filter.fields.get(prop)
-    }
-
-    return undefined
-  },
 }
 
 export default FilterStore

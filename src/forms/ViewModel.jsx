@@ -1,29 +1,22 @@
 import { autorun, observable, computed, action, toJS, extendObservable, autorunAsync } from 'mobx'
 import set from 'lodash/set'
 import get from 'lodash/get'
-import omit from 'lodash/omit'
 import debounce from 'lodash/debounce'
-import { nonenumerable } from 'core-decorators'
 
-import { validate } from 'class-validator'
-
-// function WithViewModel(target) {
 class ViewModel {
-  @nonenumerable
-  @observable
-  busy = false
+  @observable busy = false
 
   @observable touched = []
 
   @observable model
 
   fetch
-  post
+  submitHandler
 
-  constructor(model, fetch, post) {
+  constructor(model, fetch, submitHandler) {
     this.model = model
     this.fetch = fetch
-    this.post = post
+    this.submitHandler = submitHandler
   }
 
   isTouched = path => (path ? this.touched.includes(path) : this.touched.length > 0)
@@ -41,69 +34,63 @@ class ViewModel {
       this.touched.push(path)
     }
 
-    if (this.model.validate) {
-      this.debouncedValidate(path)
-    }
+    this.debouncedValidate(path)
   }
 
-  getProp = path => get(this.model, path)
+  getProp = path => {
+    return get(this.model, path)
+  }
 
   debouncedValidate = debounce(path => this.model.validate(path), 500)
 
-  val = () => {
-    validate(this.model).then(errors => {
-      if (errors.length > 0) {
-        console.log('validation failed. errors: ', errors)
-      } else {
-        console.log('validation succeed')
-      }
-    })
-  }
-
   @computed
   get modelJSON() {
+    if (this.model.toJSON) {
+      return this.model.toJSON()
+    }
     return toJS(this.model)
   }
 
   @action
   init(routeParams) {
     this.busy = true
-    this.fetch(routeParams).then(this.fetchSuccess)
+    this.fetch(routeParams)
+      .then(this.fetchSuccess)
+      .catch(this.fetchFailed)
   }
 
   @action
   fetchSuccess = ({ data }) => {
-    // data.name = Name.fromJSON(data.name) ///////////////////////////////
     extendObservable(this.model, data)
+    this.busy = false
+  }
+  @action
+  fetchFailed = ({ data }) => {
+    // ToDo: show error
     this.busy = false
   }
 
   @action
   submit = () => {
-    // if (this.model.validate) {
-    //   this.model.validate()
-    // }
-    this.val()
+    this.model.validate()
 
-    console.log('submitting', this.modelJSON)
-
-    if (this.isValid) {
+    if (this.model.isValid) {
       this.busy = true
       // preSubmit
-      this.post(toJS(this.model)).then(
-        // postSubmit
-        action(r => {
-          this.busy = false
-          console.log(r)
-        })
-      )
+      this.submitHandler(this.model)
+        .then(
+          // postSubmit
+          action(r => {
+            this.busy = false
+          })
+        )
+        .catch(
+          action(r => {
+            this.busy = false
+          })
+        )
     }
   }
 }
-
-// ViewModel.displayName = `WithViewModel(${target.displayName || target.name})`
-//
-// return ViewModel
-// }
 
 export default ViewModel

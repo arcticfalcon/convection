@@ -16,11 +16,33 @@
     "mocha": true,
     "es6": true
   },
+  "settings": {
+    "import/ignore": [
+      "node_modules"
+    ],
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ],
+        "moduleDirectory": [
+          "node_modules",
+          "src"
+        ]
+      }
+    }
+  },
   "rules": {
+    "import/extensions": [1, "always", {
+      "js": "never",
+      "jsx": "never"
+    }],
+    "import/no-unresolved": 1,
     "space-before-function-paren": "off",
     "react/prefer-stateless-function": "warn",
     "react/jsx-filename-extension": [
-      1,
+      0,
       {
         "extensions": [
           ".js",
@@ -36,5 +58,6 @@
   },
   "plugins": [
     "prettier"
-  ]
+  ],
+
 }

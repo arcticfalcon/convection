@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
-import { Form as SemanticForm, Message } from 'semantic-ui-react'
+import { Form as SemanticForm } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
-
-const Errors = observer(({ model }) => <Message error header="Errors" content={model.flatErrors} />)
 
 @observer
 class Form extends React.Component {
@@ -12,39 +10,57 @@ class Form extends React.Component {
     this.init(this.props)
   }
 
+  init(props) {
+    props.viewModel.init(props.match.params)
+  }
   // componentWillUpdate(newProps) {
   //   this.fetch(newProps)
   // }
 
   render() {
-    let { children, model, otherProps } = this.props
-
-    children = React.Children.map(
+    const {
       children,
-      child => (React.isValidElement(child) ? React.cloneElement(child, { model: model }) : child)
+      viewModel,
+      submit,
+      match,
+      location,
+      history,
+      staticContext,
+      ...otherProps
+    } = this.props
+
+    const childrenWithModel = React.Children.map(
+      children,
+      child =>
+        React.isValidElement(child)
+          ? React.cloneElement(child, {
+              model: viewModel.model,
+              getter: viewModel.getProp,
+              getErrors: viewModel.model.getErrors,
+              hasErrors: viewModel.model.hasErrors,
+              handleChange: viewModel.handleChange,
+            })
+          : child
     )
 
     return (
       <SemanticForm
-        onSubmit={model.submit}
-        loading={model.busy}
-        error={!model.isValid}
+        onSubmit={submit}
+        loading={viewModel.busy}
+        error={!viewModel.model.isValid}
         {...otherProps}
       >
-        {children}
-        {/*<Errors model={model} />*/}
+        {childrenWithModel}
+        {/*<Errors model={viewModel.model} />*/}
       </SemanticForm>
     )
-  }
-
-  init(props) {
-    props.model.init(props.match.params)
   }
 }
 
 Form.propTypes = {
-  model: PropTypes.any.isRequired,
-  // children, PropTypes.any
+  viewModel: PropTypes.any.isRequired,
+  submit: PropTypes.func.isRequired,
+  children: PropTypes.any,
 }
 
 Form.defaultProps = {}

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import { Button } from 'semantic-ui-react'
 
-const Submit = observer(() => {
-  return <Button content="GO" />
+const Submit = observer(props => {
+  return <Button content="Submit" />
 })
 
 Submit.propTypes = {}

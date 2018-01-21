@@ -1,4 +1,5 @@
 import { observable, action } from 'mobx'
+import { compile } from 'path-to-regexp'
 
 class RouteStore {
   @observable routes = new Map()
@@ -10,6 +11,18 @@ class RouteStore {
     }
 
     this.routes.set(name, location)
+  }
+
+  get(name, params) {
+    if (!this.routes.has(name)) {
+      throw new Error(`Route ${name} is not registered.`)
+    }
+
+    try {
+      return compile(this.routes.get(name))(params)
+    } catch (ex) {
+      console.error(ex)
+    }
   }
 }
 

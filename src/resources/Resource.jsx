@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { inject, observer } from 'mobx-react'
+import { observer } from 'mobx-react'
 import { Route, Switch, withRouter } from 'react-router-dom'
+
+import { injectRouteStore } from '../stores/RootStore'
 
 function buildRoute(path, Component, props) {
   return (
@@ -9,31 +11,60 @@ function buildRoute(path, Component, props) {
       key={path}
       exact
       path={path}
-      render={routerProps => <Component {...props} {...routerProps} />}
+      render={routerProps => {
+        return <Component {...props} {...routerProps} />
+      }}
     />
   )
 }
 
+@withRouter
+@injectRouteStore
 class Resource extends React.Component {
   constructor(props) {
-    super()
-
-    props.routeStore.add(`${props.name}:list`, `${props.path}/list`)
-    props.routeStore.add(`${props.name}:show`, `${props.path}/show`)
+    super(props)
+    this.registerRoutes(this.props)
   }
-  render() {
-    const { path, list, show, actions = [], service } = this.props
 
+  registerRoutes(props) {
+    if (props.browse) {
+      props.routeStore.add(`${props.name}:browse`, `${props.path}/browse`)
+    }
+    if (props.read) {
+      props.routeStore.add(`${props.name}:read`, `${props.path}/:id`)
+    }
+    if (props.edit) {
+      props.routeStore.add(`${props.name}:edit`, `${props.path}/:id/edit`)
+    }
+    if (props.add) {
+      props.routeStore.add(`${props.name}:add`, `${props.path}/add`)
+    }
+    if (props.deleter) {
+      props.routeStore.add(`${props.name}:delete`, `${props.path}/:id/delete`)
+    }
+    // props.actions.forEach(action => props.routeStore.add(`${action.name}`, `${action.path}`))
+  }
+
+  render() {
+    const { path, browse, read, edit, add, deleter, actions = [] } = this.props
     const routes = actions.map(([actionName, actionPath, component]) => {
       return buildRoute(path, component, {})
     })
 
-    if (list) {
-      routes.push(buildRoute(`${path}/list`, list, {}))
+    if (browse) {
+      routes.push(buildRoute(`${path}/browse`, browse, {}))
     }
-
-    if (show) {
-      routes.push(buildRoute(`${path}/:id`, show, {}))
+    if (read) {
+      routes.push(buildRoute(`${path}/:id`, read, {}))
+    }
+    if (edit) {
+      routes.push(buildRoute(`${path}/:id/edit`, edit, {}))
+    }
+    if (add) {
+      routes.push(buildRoute(`${path}/add`, add, {}))
+    }
+    if (deleter) {
+      routes.push(buildRoute(`${path}/:id/delete`, deleter, {}))
     }
 
     return <Switch>{routes}</Switch>
@@ -42,11 +73,11 @@ class Resource extends React.Component {
 Resource.propTypes = {
   name: PropTypes.string.isRequired,
   path: PropTypes.string,
-  list: PropTypes.func,
-  show: PropTypes.func,
-  // update: PropTypes.func,
-  // create: PropTypes.func,
-  // deletee: PropTypes.func,
+  browse: PropTypes.func,
+  read: PropTypes.func,
+  edit: PropTypes.func,
+  add: PropTypes.func,
+  deleter: PropTypes.func,
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
@@ -54,9 +85,10 @@ Resource.propTypes = {
       component: PropTypes.element.isRequired,
     })
   ),
-  service: PropTypes.object,
 }
 
-Resource.defaultProps = {}
+Resource.defaultProps = {
+  actions: [],
+}
 
-export default inject('routeStore')(withRouter(observer(Resource)))
+export default Resource
