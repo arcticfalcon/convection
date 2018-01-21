@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "src/index.js",
-  
+  "module": "dist/es/index.js",
   "scripts": {
     "build": "npm run build:commonjs && npm run build:es",
     "prebuild:commonjs": "rimraf dist/commonjs",
