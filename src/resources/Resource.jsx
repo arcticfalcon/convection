@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { observer } from 'mobx-react'
 import { Route, Switch, withRouter } from 'react-router-dom'
 
 import { injectRouteStore } from '../stores/RootStore'
@@ -21,12 +20,7 @@ function buildRoute(path, Component, props) {
 @withRouter
 @injectRouteStore
 class Resource extends React.Component {
-  constructor(props) {
-    super(props)
-    this.registerRoutes(this.props)
-  }
-
-  registerRoutes(props) {
+  static registerRoutes(props) {
     if (props.browse) {
       props.routeStore.add(`${props.name}:browse`, `${props.path}/browse`)
     }
@@ -43,6 +37,11 @@ class Resource extends React.Component {
       props.routeStore.add(`${props.name}:delete`, `${props.path}/:id/delete`)
     }
     // props.actions.forEach(action => props.routeStore.add(`${action.name}`, `${action.path}`))
+  }
+
+  constructor(props) {
+    super(props)
+    this.registerRoutes(this.props)
   }
 
   render() {

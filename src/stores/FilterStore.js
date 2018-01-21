@@ -1,4 +1,4 @@
-import { observable, action, toJS, computed } from 'mobx'
+import { observable, action, computed } from 'mobx'
 
 class FilterStore {
   @observable fields = new Map()
@@ -10,7 +10,8 @@ class FilterStore {
     direction: 1,
   }
   @observable page = 1
-  @observable pages
+  @observable pageCount
+  @observable perPage = 10
   fetchPromise
 
   constructor(fetch) {
@@ -68,9 +69,9 @@ class FilterStore {
   }
 
   @action
-  fetchSuccess = ({ data }) => {
+  fetchSuccess = ({ data, total }) => {
     this.data = data
-    this.pages = 13 // ToDo: use actual value
+    this.pageCount = Math.ceil(total / this.perPage)
     this.busy = false
   }
 

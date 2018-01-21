@@ -29,7 +29,7 @@ const Text = observer(
 
     return (
       <Form.Field error={doesHaveErrors} inline={inline} required={required} width={width}>
-        {label || <label>{path}</label>}
+        {label || <label htmlFor={path}>{path}</label>}
         <Input
           name={path}
           value={getter(path) || ''}
