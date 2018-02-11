@@ -12,11 +12,24 @@ class ViewModel {
 
   fetch
   submitHandler
+  preSubmitHandler
+  postSubmitHandler
+  failedSubmitHandler
 
-  constructor(model, fetch, submitHandler) {
+  constructor(
+    model,
+    fetch,
+    submitHandler,
+    preSubmitHandler,
+    postSubmitHandler,
+    failedSubmitHandler
+  ) {
     this.model = model
     this.fetch = fetch
     this.submitHandler = submitHandler
+    this.preSubmitHandler = preSubmitHandler
+    this.postSubmitHandler = postSubmitHandler
+    this.failedSubmitHandler = failedSubmitHandler
   }
 
   isTouched = path => (path ? this.touched.includes(path) : this.touched.length > 0)
@@ -74,22 +87,38 @@ class ViewModel {
   submit = () => {
     this.model.validate()
 
-    if (this.model.isValid) {
-      this.busy = true
-      // preSubmit
-      this.submitHandler(this.model)
-        .then(
-          // postSubmit
-          action(r => {
-            this.busy = false
-          })
-        )
-        .catch(
-          action(r => {
-            this.busy = false
-          })
-        )
+    if (!this.model.isValid) {
+      return
     }
+
+    this.busy = true
+
+    // pre Submit
+    if (this.preSubmitHandler) {
+      this.preSubmitHandler(this)
+    }
+
+    this.submitHandler(this.model, this)
+      .then(
+        action(response => {
+          // post Submit
+          if (this.postSubmitHandler) {
+            this.postSubmitHandler(this, response)
+          }
+
+          this.busy = false
+        })
+      )
+      .catch(
+        action(response => {
+          // failed submit
+          if (this.failedSubmitHandler) {
+            this.failedSubmitHandler(this, response)
+          }
+
+          this.busy = false
+        })
+      )
   }
 }
 

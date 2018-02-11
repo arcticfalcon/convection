@@ -22,11 +22,11 @@ var _mobxReact = require('mobx-react');
 
 var _reactRouter = require('react-router');
 
-var _semanticUiReact = require('semantic-ui-react');
-
 var _createBrowserHistory = require('history/createBrowserHistory');
 
 var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
+
+var _reactIntl = require('react-intl');
 
 var _RootStore = require('./stores/RootStore');
 
@@ -89,6 +89,10 @@ var rootStore = new _RootStore2.default();
 var browserHistory = (0, _createBrowserHistory2.default)();
 var history = (0, _History.syncHistoryWithStore)(browserHistory, rootStore.historyStore);
 
+var messages = {
+  'common.welcome': 'The default locale of this example app.'
+};
+
 var Admin = (0, _mobxReact.observer)(_class = (_class2 = function (_React$Component) {
   _inherits(Admin, _React$Component);
 
@@ -115,28 +119,21 @@ var Admin = (0, _mobxReact.observer)(_class = (_class2 = function (_React$Compon
   }, {
     key: 'render',
     value: function render() {
-      var children = this.props.children;
+      var _props = this.props,
+          children = _props.children,
+          Layout = _props.layout;
 
 
       return _react2.default.createElement(
-        _mobxReact.Provider,
-        { rootStore: rootStore },
+        _reactIntl.IntlProvider,
+        { locale: 'en', messages: messages },
         _react2.default.createElement(
-          _reactRouter.Router,
-          { history: history },
+          _mobxReact.Provider,
+          { rootStore: rootStore },
           _react2.default.createElement(
-            _semanticUiReact.Grid,
-            null,
-            _react2.default.createElement(
-              _semanticUiReact.Grid.Column,
-              { width: 4 },
-              this.menu
-            ),
-            _react2.default.createElement(
-              _semanticUiReact.Grid.Column,
-              { width: 10 },
-              children
-            )
+            _reactRouter.Router,
+            { history: history },
+            _react2.default.createElement(Layout, { menu: this.menu, content: children })
           )
         )
       );
@@ -148,6 +145,25 @@ var Admin = (0, _mobxReact.observer)(_class = (_class2 = function (_React$Compon
   enumerable: true,
   initializer: null
 }), _applyDecoratedDescriptor(_class2.prototype, 'componentDidMount', [_mobx.action], Object.getOwnPropertyDescriptor(_class2.prototype, 'componentDidMount'), _class2.prototype)), _class2)) || _class;
+
+var BasicLayout = function BasicLayout(_ref2) {
+  var menu = _ref2.menu,
+      content = _ref2.content;
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'div',
+      { style: { width: '20%', float: 'left' } },
+      menu
+    ),
+    _react2.default.createElement(
+      'div',
+      { style: { width: '80%', float: 'left' } },
+      content
+    )
+  );
+};
 
 // const Admin = ({ menu, children }) => {
 //   console.log('admin')
@@ -168,10 +184,13 @@ Admin.propTypes = {
   // PropTypes.instanceOf(Action)
   // ])
   // ),
-  menu: _propTypes2.default.any.isRequired
+  menu: _propTypes2.default.element.isRequired,
+  layout: _propTypes2.default.func.isRequired
 };
 
-Admin.defaultProps = {};
+Admin.defaultProps = {
+  layout: BasicLayout
+};
 
 var _default = Admin;
 exports.default = _default;
@@ -188,7 +207,11 @@ var _temp2 = function () {
 
   __REACT_HOT_LOADER__.register(history, 'history', 'src/Admin.jsx');
 
+  __REACT_HOT_LOADER__.register(messages, 'messages', 'src/Admin.jsx');
+
   __REACT_HOT_LOADER__.register(Admin, 'Admin', 'src/Admin.jsx');
+
+  __REACT_HOT_LOADER__.register(BasicLayout, 'BasicLayout', 'src/Admin.jsx');
 
   __REACT_HOT_LOADER__.register(_default, 'default', 'src/Admin.jsx');
 }();

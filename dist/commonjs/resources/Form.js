@@ -20,9 +20,11 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _mobxReact = require('mobx-react');
 
-var _semanticUiReact = require('semantic-ui-react');
-
 var _reactRouterDom = require('react-router-dom');
+
+var _ViewModel = require('./forms/ViewModel');
+
+var _ViewModel2 = _interopRequireDefault(_ViewModel);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38,9 +40,21 @@ var Form = (0, _mobxReact.observer)(_class = function (_React$Component) {
   _inherits(Form, _React$Component);
 
   function Form() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
     _classCallCheck(this, Form);
 
-    return _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).apply(this, arguments));
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Form.__proto__ || Object.getPrototypeOf(Form)).call.apply(_ref, [this].concat(args))), _this), _this.init = function () {
+      var _this2;
+
+      return (_this2 = _this).__init__REACT_HOT_LOADER__.apply(_this2, arguments);
+    }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
   _createClass(Form, [{
@@ -49,14 +63,15 @@ var Form = (0, _mobxReact.observer)(_class = function (_React$Component) {
       this.init(this.props);
     }
   }, {
-    key: 'init',
-    value: function init(props) {
-      props.viewModel.init(props.match.params);
-    }
+    key: '__init__REACT_HOT_LOADER__',
+
     // componentWillUpdate(newProps) {
     //   this.fetch(newProps)
     // }
 
+    value: function __init__REACT_HOT_LOADER__(props) {
+      props.viewModel.init(props.match.params);
+    }
   }, {
     key: 'render',
     value: function render() {
@@ -64,11 +79,12 @@ var Form = (0, _mobxReact.observer)(_class = function (_React$Component) {
           children = _props.children,
           viewModel = _props.viewModel,
           submit = _props.submit,
+          FormComponent = _props.as,
           match = _props.match,
           location = _props.location,
           history = _props.history,
           staticContext = _props.staticContext,
-          otherProps = _objectWithoutProperties(_props, ['children', 'viewModel', 'submit', 'match', 'location', 'history', 'staticContext']);
+          otherProps = _objectWithoutProperties(_props, ['children', 'viewModel', 'submit', 'as', 'match', 'location', 'history', 'staticContext']);
 
       var childrenWithModel = _react2.default.Children.map(children, function (child) {
         return _react2.default.isValidElement(child) ? _react2.default.cloneElement(child, {
@@ -81,7 +97,7 @@ var Form = (0, _mobxReact.observer)(_class = function (_React$Component) {
       });
 
       return _react2.default.createElement(
-        _semanticUiReact.Form,
+        FormComponent,
         _extends({
           onSubmit: submit,
           loading: viewModel.busy,
@@ -96,19 +112,18 @@ var Form = (0, _mobxReact.observer)(_class = function (_React$Component) {
 }(_react2.default.Component)) || _class;
 
 Form.propTypes = {
-  viewModel: _propTypes2.default.any.isRequired,
+  viewModel: _propTypes2.default.instanceOf(_ViewModel2.default).isRequired,
   submit: _propTypes2.default.func.isRequired,
-  children: _propTypes2.default.any
+  children: _propTypes2.default.arrayOf(_propTypes2.default.element).isRequired,
+  as: _propTypes2.default.func.isRequired
 };
-
-Form.defaultProps = {};
 
 var _default = (0, _reactRouterDom.withRouter)(Form);
 
 exports.default = _default;
 ;
 
-var _temp = function () {
+var _temp2 = function () {
   if (typeof __REACT_HOT_LOADER__ === 'undefined') {
     return;
   }

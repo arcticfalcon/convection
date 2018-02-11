@@ -70,7 +70,7 @@ function _initializerWarningHelper(descriptor, context) {
 }
 
 var ViewModel = (_class = function () {
-  function ViewModel(model, fetch, submitHandler) {
+  function ViewModel(model, fetch, submitHandler, preSubmitHandler, postSubmitHandler, failedSubmitHandler) {
     var _this = this;
 
     _classCallCheck(this, ViewModel);
@@ -106,6 +106,9 @@ var ViewModel = (_class = function () {
     this.model = model;
     this.fetch = fetch;
     this.submitHandler = submitHandler;
+    this.preSubmitHandler = preSubmitHandler;
+    this.postSubmitHandler = postSubmitHandler;
+    this.failedSubmitHandler = failedSubmitHandler;
   }
 
   _createClass(ViewModel, [{
@@ -207,17 +210,32 @@ var ViewModel = (_class = function () {
     return function () {
       _this6.model.validate();
 
-      if (_this6.model.isValid) {
-        _this6.busy = true;
-        // preSubmit
-        _this6.submitHandler(_this6.model).then(
-        // postSubmit
-        (0, _mobx.action)(function (r) {
-          _this6.busy = false;
-        })).catch((0, _mobx.action)(function (r) {
-          _this6.busy = false;
-        }));
+      if (!_this6.model.isValid) {
+        return;
       }
+
+      _this6.busy = true;
+
+      // pre Submit
+      if (_this6.preSubmitHandler) {
+        _this6.preSubmitHandler(_this6);
+      }
+
+      _this6.submitHandler(_this6.model, _this6).then((0, _mobx.action)(function (response) {
+        // post Submit
+        if (_this6.postSubmitHandler) {
+          _this6.postSubmitHandler(_this6, response);
+        }
+
+        _this6.busy = false;
+      })).catch((0, _mobx.action)(function (response) {
+        // failed submit
+        if (_this6.failedSubmitHandler) {
+          _this6.failedSubmitHandler(_this6, response);
+        }
+
+        _this6.busy = false;
+      }));
     };
   }
 })), _class);

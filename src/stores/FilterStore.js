@@ -10,7 +10,7 @@ class FilterStore {
     direction: 1,
   }
   @observable page = 1
-  @observable pageCount
+  @observable pageCount = 0
   @observable perPage = 10
   fetchPromise
 
@@ -70,6 +70,7 @@ class FilterStore {
 
   @action
   fetchSuccess = ({ data, total }) => {
+    console.log(data)
     this.data = data
     this.pageCount = Math.ceil(total / this.perPage)
     this.busy = false

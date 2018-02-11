@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sanitizers = exports.initSanitizers = exports.sanitize = exports.injectRouteStore = exports.Filter = exports.links = exports.ModelValidation = exports.WithModel = exports.ViewModel = exports.Layout = exports.Admin = exports.inputs = exports.formatters = exports.Form = exports.DataBrowser = exports.Resource = undefined;
+exports.sanitizers = exports.initSanitizers = exports.sanitize = exports.injectRouteStore = exports.Filter = exports.links = exports.ModelValidation = exports.WithModel = exports.ViewModel = exports.Admin = exports.formatters = exports.Form = exports.Resource = undefined;
 
 var _Resource = require('./resources/Resource');
 
@@ -11,15 +11,6 @@ Object.defineProperty(exports, 'Resource', {
   enumerable: true,
   get: function get() {
     return _interopRequireDefault(_Resource).default;
-  }
-});
-
-var _DataBrowser = require('./resources/DataBrowser');
-
-Object.defineProperty(exports, 'DataBrowser', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_DataBrowser).default;
   }
 });
 
@@ -41,30 +32,12 @@ Object.defineProperty(exports, 'formatters', {
   }
 });
 
-var _inputs = require('./inputs');
-
-Object.defineProperty(exports, 'inputs', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_inputs).default;
-  }
-});
-
 var _Admin = require('./Admin');
 
 Object.defineProperty(exports, 'Admin', {
   enumerable: true,
   get: function get() {
     return _interopRequireDefault(_Admin).default;
-  }
-});
-
-var _Layout = require('./components/Layout');
-
-Object.defineProperty(exports, 'Layout', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_Layout).default;
   }
 });
 

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
-import { Form as SemanticForm } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
+import { FormattedMessage } from 'react-intl'
 
 @observer
 class Form extends React.Component {
@@ -10,7 +10,7 @@ class Form extends React.Component {
     this.init(this.props)
   }
 
-  init(props) {
+  init = props => {
     props.viewModel.init(props.match.params)
   }
   // componentWillUpdate(newProps) {
@@ -22,6 +22,7 @@ class Form extends React.Component {
       children,
       viewModel,
       submit,
+      as: FormComponent,
       match,
       location,
       history,
@@ -44,25 +45,29 @@ class Form extends React.Component {
     )
 
     return (
-      <SemanticForm
+      <FormComponent
         onSubmit={submit}
         loading={viewModel.busy}
         error={!viewModel.model.isValid}
         {...otherProps}
       >
+        <FormattedMessage id="common.welcome" values={{ name: 'Nombre', unreadCount: 2 }} />
         {childrenWithModel}
-        {/*<Errors model={viewModel.model} />*/}
-      </SemanticForm>
+      </FormComponent>
     )
   }
 }
 
 Form.propTypes = {
-  viewModel: PropTypes.any.isRequired,
+  viewModel: PropTypes.shape({
+    model: PropTypes.object,
+    getProp: PropTypes.func,
+    handleChange: PropTypes.func,
+    busy: PropTypes.bool,
+  }).isRequired,
   submit: PropTypes.func.isRequired,
-  children: PropTypes.any,
+  children: PropTypes.arrayOf(PropTypes.element).isRequired,
+  as: PropTypes.func.isRequired,
 }
-
-Form.defaultProps = {}
 
 export default withRouter(Form)

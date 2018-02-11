@@ -20,7 +20,13 @@ function buildRoute(path, Component, props) {
 @withRouter
 @injectRouteStore
 class Resource extends React.Component {
-  static registerRoutes(props) {
+  constructor(props) {
+    super(props)
+    console.log(this)
+    this.registerRoutes(this.props)
+  }
+
+  registerRoutes = props => {
     if (props.browse) {
       props.routeStore.add(`${props.name}:browse`, `${props.path}/browse`)
     }
@@ -37,11 +43,6 @@ class Resource extends React.Component {
       props.routeStore.add(`${props.name}:delete`, `${props.path}/:id/delete`)
     }
     // props.actions.forEach(action => props.routeStore.add(`${action.name}`, `${action.path}`))
-  }
-
-  constructor(props) {
-    super(props)
-    this.registerRoutes(this.props)
   }
 
   render() {

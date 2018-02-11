@@ -1,5 +1,0 @@
-Basic grid:
-
-```jsx
-<Datagrid />
-```

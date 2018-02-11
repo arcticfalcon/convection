@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { action, observable } from 'mobx'
 import { Provider, observer } from 'mobx-react'
 import { Router } from 'react-router'
-import { Grid } from 'semantic-ui-react'
 import createBrowserHistory from 'history/createBrowserHistory'
+import { IntlProvider, defineMessages } from 'react-intl'
 
 import RootStore from './stores/RootStore'
 import { syncHistoryWithStore } from './routing/History'
@@ -12,6 +12,10 @@ import { syncHistoryWithStore } from './routing/History'
 const rootStore = new RootStore()
 const browserHistory = createBrowserHistory()
 const history = syncHistoryWithStore(browserHistory, rootStore.historyStore)
+
+const messages = {
+  'common.welcome': 'The default locale of this example app.',
+}
 
 @observer
 class Admin extends React.Component {
@@ -24,20 +28,26 @@ class Admin extends React.Component {
   }
 
   render() {
-    const { children } = this.props
+    const { children, layout: Layout } = this.props
 
     return (
-      <Provider rootStore={rootStore}>
-        <Router history={history}>
-          <Grid>
-            <Grid.Column width={4}>{this.menu}</Grid.Column>
-            <Grid.Column width={10}>{children}</Grid.Column>
-          </Grid>
-        </Router>
-      </Provider>
+      <IntlProvider locale="en" messages={messages}>
+        <Provider rootStore={rootStore}>
+          <Router history={history}>
+            <Layout menu={this.menu} content={children} />
+          </Router>
+        </Provider>
+      </IntlProvider>
     )
   }
 }
+
+const BasicLayout = ({ menu, content }) => (
+  <div>
+    <div style={{ width: '20%', float: 'left' }}>{menu}</div>
+    <div style={{ width: '80%', float: 'left' }}>{content}</div>
+  </div>
+)
 
 // const Admin = ({ menu, children }) => {
 //   console.log('admin')
@@ -58,9 +68,12 @@ Admin.propTypes = {
   // PropTypes.instanceOf(Action)
   // ])
   // ),
-  menu: PropTypes.any.isRequired,
+  menu: PropTypes.element.isRequired,
+  layout: PropTypes.func.isRequired,
 }
 
-Admin.defaultProps = {}
+Admin.defaultProps = {
+  layout: BasicLayout,
+}
 
 export default Admin

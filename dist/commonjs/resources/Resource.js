@@ -20,8 +20,6 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _mobxReact = require('mobx-react');
-
 var _reactRouterDom = require('react-router-dom');
 
 var _RootStore = require('../stores/RootStore');
@@ -53,13 +51,18 @@ var Resource = (0, _reactRouterDom.withRouter)(_class = (0, _RootStore.injectRou
 
     var _this = _possibleConstructorReturn(this, (Resource.__proto__ || Object.getPrototypeOf(Resource)).call(this, props));
 
+    _this.registerRoutes = function () {
+      return _this.__registerRoutes__REACT_HOT_LOADER__.apply(_this, arguments);
+    };
+
+    console.log(_this);
     _this.registerRoutes(_this.props);
     return _this;
   }
 
   _createClass(Resource, [{
-    key: 'registerRoutes',
-    value: function registerRoutes(props) {
+    key: '__registerRoutes__REACT_HOT_LOADER__',
+    value: function __registerRoutes__REACT_HOT_LOADER__(props) {
       if (props.browse) {
         props.routeStore.add(props.name + ':browse', props.path + '/browse');
       }

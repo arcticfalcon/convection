@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13;
+var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _descriptor11, _descriptor12, _descriptor13, _descriptor14;
 
 var _mobx = require('mobx');
 
@@ -71,25 +71,27 @@ var FilterStore = (_class = function () {
 
     _initDefineProp(this, 'page', _descriptor5, this);
 
-    _initDefineProp(this, 'pages', _descriptor6, this);
+    _initDefineProp(this, 'pageCount', _descriptor6, this);
 
-    _initDefineProp(this, 'handleChange', _descriptor7, this);
+    _initDefineProp(this, 'perPage', _descriptor7, this);
+
+    _initDefineProp(this, 'handleChange', _descriptor8, this);
 
     this.getProp = function () {
       return _this.__getProp__REACT_HOT_LOADER__.apply(_this, arguments);
     };
 
-    _initDefineProp(this, 'handleSort', _descriptor8, this);
+    _initDefineProp(this, 'handleSort', _descriptor9, this);
 
-    _initDefineProp(this, 'setPage', _descriptor9, this);
+    _initDefineProp(this, 'setPage', _descriptor10, this);
 
-    _initDefineProp(this, 'reset', _descriptor10, this);
+    _initDefineProp(this, 'reset', _descriptor11, this);
 
-    _initDefineProp(this, 'fetchSuccess', _descriptor11, this);
+    _initDefineProp(this, 'fetchSuccess', _descriptor12, this);
 
-    _initDefineProp(this, 'fetchFailed', _descriptor12, this);
+    _initDefineProp(this, 'fetchFailed', _descriptor13, this);
 
-    _initDefineProp(this, 'submit', _descriptor13, this);
+    _initDefineProp(this, 'submit', _descriptor14, this);
 
     this.isValid = function () {
       return _this.__isValid__REACT_HOT_LOADER__.apply(_this, arguments);
@@ -161,10 +163,15 @@ var FilterStore = (_class = function () {
   initializer: function initializer() {
     return 1;
   }
-}), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'pages', [_mobx.observable], {
+}), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'pageCount', [_mobx.observable], {
   enumerable: true,
   initializer: null
-}), _descriptor7 = _applyDecoratedDescriptor(_class.prototype, 'handleChange', [_mobx.action], {
+}), _descriptor7 = _applyDecoratedDescriptor(_class.prototype, 'perPage', [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return 10;
+  }
+}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, 'handleChange', [_mobx.action], {
   enumerable: true,
   initializer: function initializer() {
     var _this2 = this;
@@ -176,7 +183,7 @@ var FilterStore = (_class = function () {
       _this2.fields.set(name, value);
     };
   }
-}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, 'handleSort', [_mobx.action], {
+}), _descriptor9 = _applyDecoratedDescriptor(_class.prototype, 'handleSort', [_mobx.action], {
   enumerable: true,
   initializer: function initializer() {
     var _this3 = this;
@@ -193,7 +200,7 @@ var FilterStore = (_class = function () {
       _this3.fetch();
     };
   }
-}), _descriptor9 = _applyDecoratedDescriptor(_class.prototype, 'setPage', [_mobx.action], {
+}), _descriptor10 = _applyDecoratedDescriptor(_class.prototype, 'setPage', [_mobx.action], {
   enumerable: true,
   initializer: function initializer() {
     var _this4 = this;
@@ -202,7 +209,7 @@ var FilterStore = (_class = function () {
       return _this4.page = page;
     };
   }
-}), _applyDecoratedDescriptor(_class.prototype, 'init', [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _descriptor10 = _applyDecoratedDescriptor(_class.prototype, 'reset', [_mobx.action], {
+}), _applyDecoratedDescriptor(_class.prototype, 'init', [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, 'init'), _class.prototype), _descriptor11 = _applyDecoratedDescriptor(_class.prototype, 'reset', [_mobx.action], {
   enumerable: true,
   initializer: function initializer() {
     var _this5 = this;
@@ -211,20 +218,21 @@ var FilterStore = (_class = function () {
       _this5.fields.clear();
     };
   }
-}), _applyDecoratedDescriptor(_class.prototype, 'model', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'model'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'fetch', [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, 'fetch'), _class.prototype), _descriptor11 = _applyDecoratedDescriptor(_class.prototype, 'fetchSuccess', [_mobx.action], {
+}), _applyDecoratedDescriptor(_class.prototype, 'model', [_mobx.computed], Object.getOwnPropertyDescriptor(_class.prototype, 'model'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'fetch', [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, 'fetch'), _class.prototype), _descriptor12 = _applyDecoratedDescriptor(_class.prototype, 'fetchSuccess', [_mobx.action], {
   enumerable: true,
   initializer: function initializer() {
     var _this6 = this;
 
     return function (_ref2) {
-      var data = _ref2.data;
+      var data = _ref2.data,
+          total = _ref2.total;
 
       _this6.data = data;
-      _this6.pages = 13; // ToDo: use actual value
+      _this6.pageCount = Math.ceil(total / _this6.perPage);
       _this6.busy = false;
     };
   }
-}), _descriptor12 = _applyDecoratedDescriptor(_class.prototype, 'fetchFailed', [_mobx.action], {
+}), _descriptor13 = _applyDecoratedDescriptor(_class.prototype, 'fetchFailed', [_mobx.action], {
   enumerable: true,
   initializer: function initializer() {
     var _this7 = this;
@@ -236,7 +244,7 @@ var FilterStore = (_class = function () {
       _this7.busy = false;
     };
   }
-}), _descriptor13 = _applyDecoratedDescriptor(_class.prototype, 'submit', [_mobx.action], {
+}), _descriptor14 = _applyDecoratedDescriptor(_class.prototype, 'submit', [_mobx.action], {
   enumerable: true,
   initializer: function initializer() {
     var _this8 = this;
